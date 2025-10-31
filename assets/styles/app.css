@@ -1,3 +1,8 @@
+a {
+    color: black;
+    text-decoration: none;
+}
+
 .card:hover {
     cursor: pointer;
 }
@@ -19,4 +24,66 @@
 
 .star-empty {
     color: #dcdcdc;
+}
+
+/* movies/details */
+.movie-header {
+    position: relative;
+    min-height: 250px;
+    background-size: cover;
+    background-position: center 20%;
+    color: white;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    margin-bottom: 30px;
+}
+.movie-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1;
+}
+.header-content {
+    position: relative;
+    z-index: 2;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.actor-card {
+    border: none;
+    text-align: center;
+    width: 160px;
+    height: auto;
+    padding: 5px;
+    flex-shrink: 0;
+}
+.actor-profile {
+    width: 140px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+}
+.actor-text-info {
+    display: block;
+    margin: 0;
+    text-align: center;
+    word-wrap: break-word;
+}
+.actor-carousel {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    justify-content: flex-start;
+}
+
+.movie-detail-poster {
+    max-height: 400px;
+    width: auto;
 }

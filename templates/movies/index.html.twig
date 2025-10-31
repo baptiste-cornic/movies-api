@@ -7,24 +7,26 @@
         <div class="row row-cols-1 row-cols-md-6 justify-content-center">
             {% for movie in moviesData %}
                 <div class="card d-flex flex-column p-0 m-1 border-0" style="width: 200px;">
-                    <div class="movie-img-container">
-                        <img src="{{ baseImgApi }}{{ movie.poster_path }}" alt="{{ movie.title }}" class="card-img-top">
-                    </div>
-                    {% set rating = (movie.vote_average / 2)|round(1) %} {# note sur 5 avec 1 décimale #}
-                    <div class="movie-rating text-center" title="{{ rating }}/5 sur {{ movie.vote_count }} votes">
-                        {% for i in 1..5 %}
-                            {% if i <= rating %}
-                                <i class="fa fa-star text-warning"></i> {# pleine étoile #}
-                            {% elseif i - rating < 1 %}
-                                <i class="fa fa-star-half-alt text-warning"></i> {# demi-étoile #}
-                            {% else %}
-                                <i class="fa-regular fa-star star-empty"></i> {# étoile vide #}
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    <p class="text-center fw-bold mt-auto" title="{{ movie.title }}">
-                        {{ movie.title|length > 22 ? movie.title|slice(0, 22) ~ '...' : movie.title }}
-                    </p>
+                    <a href="{{ path('movie_detail', { id: movie.id }) }}">
+                        <div class="movie-img-container">
+                            <img src="{{ originalSizeImgApi }}{{ movie.poster_path }}" alt="{{ movie.title }}" class="card-img-top">
+                        </div>
+                        {% set rating = (movie.vote_average / 2)|round(1) %}
+                        <div class="movie-rating text-center" title="{{ rating }}/5 sur {{ movie.vote_count }} votes">
+                            {% for i in 1..5 %}
+                                {% if i <= rating %}
+                                    <i class="fa fa-star text-warning"></i>
+                                {% elseif i - rating < 1 %}
+                                    <i class="fa fa-star-half-alt text-warning"></i>
+                                {% else %}
+                                    <i class="fa-regular fa-star star-empty"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p class="text-center fw-bold mt-auto" title="{{ movie.title }}">
+                            {{ movie.title|length > 22 ? movie.title|slice(0, 22) ~ '...' : movie.title }}
+                        </p>
+                    </a>
                 </div>
             {% endfor %}
         </div>
