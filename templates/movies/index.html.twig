@@ -9,7 +9,7 @@
                 <div class="card d-flex flex-column p-0 m-1 border-0" style="width: 200px;">
                     <a href="{{ path('movie_detail', { id: movie.id }) }}">
                         <div class="movie-img-container">
-                            <img src="{{ originalSizeImgApi }}{{ movie.poster_path }}" alt="{{ movie.title }}" class="card-img-top">
+                            <img src="{{ imgUrls.original }}{{ movie.poster_path }}" alt="{{ movie.title }}" class="card-img-top">
                         </div>
                         {% set rating = (movie.vote_average / 2)|round(1) %}
                         <div class="movie-rating text-center" title="{{ rating }}/5 sur {{ movie.vote_count }} votes">
