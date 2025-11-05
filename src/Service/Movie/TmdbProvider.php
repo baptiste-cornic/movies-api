@@ -37,6 +37,26 @@ final class TmdbProvider
         ]);
     }
 
+    public function getFullCast(int $id): array
+    {
+        $movieData = $this->tmdbClient->getMovieById($id);
+        $castingData = $this->tmdbClient->getMovieCredits($id);
+
+        $directors = [];
+        foreach ($castingData['crew'] as $member) {
+            if ($member['job'] === 'Director') {
+                $directors[] = $member;
+            }
+        }
+
+        return array_merge($movieData, [
+            'casting' => [
+                'cast'      => $castingData['cast'],
+                'directors' => $directors,
+            ],
+        ]);
+    }
+
     private function getTrailer(int $movieId): array
     {
         $content = $this->tmdbClient->getMovieVideos($movieId);
@@ -64,7 +84,7 @@ final class TmdbProvider
 
     private function getMainCast(array $allCastArray): array
     {
-        return array_slice($allCastArray, 0, 4);
+        return array_slice($allCastArray, 0, 5);
     }
 
     private function getDirecting(array $allCrewArray): array
