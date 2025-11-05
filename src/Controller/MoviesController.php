@@ -52,4 +52,21 @@ final class MoviesController extends AbstractController
             'imgUrls' => self::IMAGE_URLS,
         ]);
     }
+
+    #[Route('/detail/{id}/cast', name: 'movie_full_cast', requirements: ['id' => '\d+'])]
+    public function fullCast(int $id): Response
+    {
+        try {
+            $movieData = $this->tmdbProvider->getFullCast($id);
+        } catch (Throwable $exception) {
+            $this->addFlash('error', "Une erreur est survenue lors du chargement du casting complet.");
+            $this->logger->error('Erreur full cast page : ' . $exception->getMessage());
+            return $this->redirectToRoute('movie_detail', ['id' => $id]);
+        }
+
+        return $this->render('movies/full_cast.html.twig', [
+            'movieData' => $movieData,
+            'imgUrls' => self::IMAGE_URLS,
+        ]);
+    }
 }
