@@ -112,10 +112,9 @@
 
                     {% if movieData.casting.mainCast is not empty %}
                         <h2 class="h4 mt-4 mb-3">Casting</h2>
-
-                        <div class="actor-carousel">
+                        <div class="actor-grid-top-cast  d-flex flex-wrap justify-content-start">
                             {% for actor in movieData.casting.mainCast %}
-                                <div class="actor-card">
+                                <div class="actor-card-flex">
                                     {% if actor.profile_path %}
                                         <img src="{{ imgUrls.small ~ actor.profile_path }}"
                                              alt="{{ actor.name }}"
@@ -130,6 +129,12 @@
                                     </small>
                                 </div>
                             {% endfor %}
+                        </div>
+                        <div class="text-center mt-3 mb-4">
+                            <a href="{{ path('movie_full_cast', { id: movieData.id }) }}"
+                               class="btn btn-outline-secondary fw-bold">
+                                Voir le casting complet
+                            </a>
                         </div>
                     {% endif %}
                 {% endif %}
