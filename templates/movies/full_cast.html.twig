@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Casting et Équipe de {{ movieData.title }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="movie-header" style="background-image: url('{{ imgUrls.original ~ movieData.backdrop_path }}');">
+        <div class="container header-content">
+            <div class="row">
+                <div class="col-md-9 mx-auto text-center">
+                    <h1 class="display-4 fw-bold">Casting et Équipe</h1>
+                    <p class="lead mt-2">{{ movieData.title }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-4">
+                    <a href="{{ path('movie_detail', {'id': movieData.id}) }}"
+                       class="btn btn-outline-secondary w-100 fw-bold">
+                        ← Retour aux détails
+                    </a>
+                </div>
+
+                <div class="text-center">
+                    {% if movieData.poster_path %}
+                        <img src="{{ imgUrls.medium ~ movieData.poster_path }}"
+                             alt="Affiche du film {{ movieData.title }}"
+                             class="img-fluid rounded shadow-lg movie-detail-poster">
+                    {% else %}
+                        <div class="card p-4 bg-light shadow">
+                            <p class="text-muted mb-0">Affiche non disponible</p>
+                        </div>
+                    {% endif %}
+
+                    <div class="mt-4 p-3 bg-light rounded shadow-sm">
+                        {% if movieData.vote_average > 0 %}
+                            <p class="h3 mb-0 text-dark">
+                                ⭐ {{ movieData.vote_average|number_format(1) }} <small class="text-muted">/ 10</small>
+                            </p>
+                            <p class="text-muted mb-0">({{ movieData.vote_count }} votes)</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <dl class="row">
+                    <dt class="col-sm-5">Date de sortie :</dt>
+                    <dd class="col-sm-7 fw-bold">
+                        {{ movieData.release_date ? movieData.release_date|date('d/m/Y') : 'Inconnue' }}
+                    </dd>
+
+                    <dt class="col-sm-5">Durée :</dt>
+                    <dd class="col-sm-7">
+                        {{ movieData.runtime ? (movieData.runtime // 60) ~ 'h ' ~ (movieData.runtime % 60) ~ 'min' : 'Inconnue' }}
+                    </dd>
+
+                    <dt class="col-sm-5">Genres :</dt>
+                    <dd class="col-sm-7">
+                        {% for genre in movieData.genres %}
+                            <span class="badge rounded-pill bg-primary me-1">{{ genre.name }}</span>
+                        {% else %}
+                            Non spécifiés
+                        {% endfor %}
+                    </dd>
+
+                    <dt class="col-sm-5">Langue originale :</dt>
+                    <dd class="col-sm-7">{{ movieData.original_language|locale_name('fr')|capitalize }}</dd>
+
+                    {% if movieData.original_title != movieData.title %}
+                        <dt class="col-sm-5">Titre original :</dt>
+                        <dd class="col-sm-7">{{ movieData.original_title }}</dd>
+                    {% endif %}
+
+                    <dt class="col-sm-5">Budget :</dt>
+                    <dd class="col-sm-7">
+                        {{ movieData.budget > 0 ? movieData.budget|number_format(0, ',', ' ') ~ ' $' : 'Non communiqué' }}
+                    </dd>
+                </dl>
+
+            </div>
+
+            <div class="col-md-8 border-start ps-4">
+                {% if movieData.casting.directors is not empty %}
+                    <h2 class="h4 mb-3">Réalisateur(s)</h2>
+                    <div class="actor-carousel">
+                        {% for director in movieData.casting.directors %}
+                            <div class="actor-card-flex">
+                                {% if director.profile_path %}
+                                    <img src="{{ imgUrls.small ~ director.profile_path }}"
+                                         alt="{{ director.name }}"
+                                         class="actor-profile shadow-sm">
+                                {% else %}
+                                    <div class="actor-profile bg-dark d-flex align-items-center justify-content-center text-white-50">?</div>
+                                {% endif %}
+                                <strong class="actor-text-info">{{ director.name }}</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <hr class="my-4">
+
+                {% if movieData.casting.cast is not empty %}
+                    <h2 class="h4 mt-4 mb-3">Casting</h2>
+                    <div class="actor-grid-top-cast d-flex flex-wrap justify-content-start">
+                        {% for actor in movieData.casting.cast|slice(0, 10) %}
+                            <div class="actor-card-flex">
+                                {% if actor.profile_path %}
+                                    <img src="{{ imgUrls.small ~ actor.profile_path }}"
+                                         alt="{{ actor.name }}"
+                                         class="actor-profile shadow-sm">
+                                {% else %}
+                                    <div class="actor-profile bg-dark d-flex align-items-center justify-content-center text-white-50">?</div>
+                                {% endif %}
+                                <strong class="actor-text-info">{{ actor.name }}</strong>
+                                <small class="actor-text-info text-muted">{{ actor.character }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h2 class="h4 mt-4 mb-3">Liste Complète</h2>
+                    <dl class="row">
+                        {% for actor in movieData.casting.cast|slice(10) %}
+                            <dt class="col-sm-6 text-truncate" title="{{ actor.name }}">{{ actor.name }}</dt>
+                            <dd class="col-sm-6 text-muted text-truncate" title="{{ actor.character }}">{{ actor.character }}</dd>
+                        {% endfor %}
+                    </dl>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
