@@ -36,6 +36,18 @@ final class TmdbClient
         return $this->get($endpoint);
     }
 
+    public function getPersonDetails(int $personId): array
+    {
+        $endpoint = sprintf(TmdbEndpoints::PERSON_DETAIL, $personId);
+        return $this->get($endpoint);
+    }
+
+    public function getPersonMovies(int $personId): array
+    {
+        $endpoint = sprintf(TmdbEndpoints::PERSON_MOVIES, $personId);
+        return $this->get($endpoint);
+    }
+
     private function get(string $endpoint, array $options = []): array
     {
         $url = TmdbEndpoints::BASE_API_URL . $endpoint;
