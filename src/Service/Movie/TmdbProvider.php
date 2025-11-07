@@ -57,6 +57,27 @@ final class TmdbProvider
         ]);
     }
 
+    public function getPersonDetail(int $personId): array
+    {
+        $personDetails = $this->tmdbClient->getPersonDetails($personId);
+        $personMovies = $this->tmdbClient->getPersonMovies($personId);
+
+        $filmography = array_filter($personMovies['cast'], fn ($movie) =>
+            !empty($movie['release_date'])
+        );
+
+        usort($filmography, fn ($a, $b) =>
+            strtotime($b['release_date']) <=> strtotime($a['release_date'])
+        );
+
+        $personMovies['cast'] = $filmography;
+
+        return [
+            'personDetails' => $personDetails,
+            'personMovies' => $personMovies,
+        ];
+    }
+
     private function getTrailer(int $movieId): array
     {
         $content = $this->tmdbClient->getMovieVideos($movieId);
