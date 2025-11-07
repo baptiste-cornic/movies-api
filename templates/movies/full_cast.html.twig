@@ -89,9 +89,9 @@
             <div class="col-md-8 border-start ps-4">
                 {% if movieData.casting.directors is not empty %}
                     <h2 class="h4 mb-3">Réalisateur(s)</h2>
-                    <div class="actor-carousel">
+                    <div class="actor-grid-top-cast d-flex flex-wrap justify-content-start">
                         {% for director in movieData.casting.directors %}
-                            <div class="actor-card-flex">
+                            <div class="actor-card-flex rounded-3">
                                 {% if director.profile_path %}
                                     <img src="{{ imgUrls.small ~ director.profile_path }}"
                                          alt="{{ director.name }}"
@@ -111,29 +111,38 @@
                     <h2 class="h4 mt-4 mb-3">Casting</h2>
                     <div class="actor-grid-top-cast d-flex flex-wrap justify-content-start">
                         {% for actor in movieData.casting.cast|slice(0, 10) %}
-                            <div class="actor-card-flex">
-                                {% if actor.profile_path %}
-                                    <img src="{{ imgUrls.small ~ actor.profile_path }}"
-                                         alt="{{ actor.name }}"
-                                         class="actor-profile shadow-sm">
-                                {% else %}
-                                    <div class="actor-profile bg-dark d-flex align-items-center justify-content-center text-white-50">?</div>
-                                {% endif %}
-                                <strong class="actor-text-info">{{ actor.name }}</strong>
-                                <small class="actor-text-info text-muted">{{ actor.character }}</small>
+                            <div class="actor-card-flex rounded-3">
+                                <a href="{{ path('person_detail', { id: actor.id }) }}" class="d-block">
+                                    {% if actor.profile_path %}
+                                        <img src="{{ imgUrls.small ~ actor.profile_path }}"
+                                             alt="{{ actor.name }}"
+                                             class="actor-profile shadow-sm">
+                                    {% else %}
+                                        <div class="actor-profile bg-dark d-flex align-items-center justify-content-center text-white-50">?</div>
+                                    {% endif %}
+                                    <strong class="actor-text-info">{{ actor.name }}</strong>
+                                    <small class="actor-text-info text-muted">{{ actor.character }}</small>
+                                </a>
                             </div>
                         {% endfor %}
                     </div>
 
+                    {% if movieData.casting.cast|length > 10 %}
                     <hr class="my-4">
 
-                    <h2 class="h4 mt-4 mb-3">Liste Complète</h2>
-                    <dl class="row">
-                        {% for actor in movieData.casting.cast|slice(10) %}
-                            <dt class="col-sm-6 text-truncate" title="{{ actor.name }}">{{ actor.name }}</dt>
-                            <dd class="col-sm-6 text-muted text-truncate" title="{{ actor.character }}">{{ actor.character }}</dd>
-                        {% endfor %}
-                    </dl>
+                        <h2 class="h4 mt-4 mb-3">Liste Complète</h2>
+                        <dl class="row">
+                            {% for actor in movieData.casting.cast|slice(10) %}
+                                <dt class="col-sm-6 text-truncate" title="{{ actor.name }}">
+                                    <a href="{{ path('person_detail', { id: actor.id }) }}"
+                                       class="d-block text-decoration-none link-primary fw-bold">
+                                        {{ actor.name }}
+                                    </a>
+                                </dt>
+                                <dd class="col-sm-6 text-muted text-truncate" title="{{ actor.character }}">{{ actor.character }}</dd>
+                            {% endfor %}
+                        </dl>
+                    {% endif %}
                 {% endif %}
 
             </div>
