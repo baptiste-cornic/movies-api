@@ -69,4 +69,31 @@ final class MoviesController extends AbstractController
             'imgUrls' => self::IMAGE_URLS,
         ]);
     }
+
+    #[Route('/person/{id}', name: 'person_detail', requirements: ['id' => '\d+'])]
+    public function personDetail(int $id): Response
+    {
+        try {
+            $personData = $this->tmdbProvider->getPersonDetail($id);
+
+            $filmography = $personData['personMovies']['cast'];
+            $chunkSize = 10;
+            $totalFilms = count($filmography);
+            $totalChunks = ceil($totalFilms / $chunkSize);
+
+        } catch (Throwable $exception) {
+            $this->addFlash('error', "Une erreur est survenue lors du chargement du casting complet.");
+            $this->logger->error('Erreur full cast page : ' . $exception->getMessage());
+            return $this->redirectToRoute('movies');
+        }
+
+        return $this->render('movies/person_detail.html.twig', [
+            'personData' => $personData,
+            'imgUrls' => self::IMAGE_URLS,
+            'filmography' => $filmography,
+            'chunkSize' => $chunkSize,
+            'totalFilms' => $totalFilms,
+            'totalChunks' => $totalChunks,
+        ]);
+    }
 }
