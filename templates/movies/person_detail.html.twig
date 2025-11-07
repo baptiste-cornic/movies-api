@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ personData.personDetails.name }} | Détails
+{% endblock %}
+
+{% block body %}
+    {% set id_prefix = 'cast' %}
+
+    <div class="container mt-5">
+        <div class="row">
+
+            <div class="col-md-4 text-center">
+                {% if personData.personDetails.profile_path %}
+                    <div class="mb-4">
+                        <img src="{{ imgUrls.medium ~ personData.personDetails.profile_path }}"
+                             alt="Portrait de {{ personData.personDetails.name }}"
+                             class="img-fluid rounded-3 shadow-lg movie-detail-poster">
+                    </div>
+                {% endif %}
+                <h1 class="display-6 fw-bold">{{ personData.personDetails.name }}</h1>
+                {% if personData.personDetails.birthday or personData.personDetails.deathday or personData.personDetails.place_of_birth %}
+                    <hr class="my-4">
+
+                    <dl class="row text-start small">
+                        <dt class="col-sm-4 fw-bold">Né(e) le :</dt>
+                        <dd class="col-sm-8">{{ personData.personDetails.birthday ? personData.personDetails.birthday|format_datetime(locale='fr', date_format='long', time_format='none') : 'Inconnue' }}</dd>
+                        {% if personData.personDetails.deathday %}
+                            <dt class="col-sm-4 fw-bold">Décédé(e) le :</dt>
+                            <dd class="col-sm-8">{{ personData.personDetails.deathday ? personData.personDetails.deathday|format_datetime(locale='fr', date_format='long', time_format='none') : 'Inconnue' }}</dd>
+                        {% endif %}
+                        {% if personData.personDetails.place_of_birth %}
+                            <dt class="col-sm-4 fw-bold">Lieu de naissance :</dt>
+                            <dd class="col-sm-8">{{ personData.personDetails.place_of_birth }}</dd>
+                        {% endif %}
+                    </dl>
+                {% endif %}
+
+
+                {% if personData.personDetails.biography %}
+                    <hr class="my-4">
+
+                    <div class="text-start">
+                        <h2 class="h5 mb-3 fw-bold">Biographie</h2>
+                        <p class="small text-muted text-justify">
+                            {{ personData.personDetails.biography|nl2br|raw }}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-8 border-start ps-4">
+                <h2 class="mb-4 display-5 fw-bold d-flex align-items-center justify-content-between">
+                    Filmographie
+                    {% if totalFilms > 0 %}
+                        <span class="badge bg-secondary fs-6 rounded-pill flex-shrink-0">
+                            {{ totalFilms }} films
+                        </span>
+                    {% endif %}
+                </h2>
+
+                {% if totalFilms > 0 %}
+                    <ul class="list-group list-group-flush" id="{{ id_prefix ~ '-container' }}">
+                        {% for i in 0..totalChunks - 1 %}
+                            {% set startIndex = i * chunkSize %}
+                            {% set chunkId = id_prefix ~ '-chunk-' ~ i %}
+                            {% set isFirstChunk = i == 0 %}
+                            {% set filmsInThisChunk = filmography|slice(startIndex, chunkSize) %}
+
+                            {% if not isFirstChunk %}
+                                <div class="collapse" id="{{ chunkId }}">
+                            {% endif %}
+
+                            <div class="film-chunk-list">
+                                {% for film in filmsInThisChunk %}
+                                    {% set year = film.release_date ? film.release_date|date('Y') : 'N/A' %}
+
+                                    <a href="{{ path('movie_detail', { id: film.id }) }}"
+                                       class="list-group-item list-group-item-action d-flex align-items-center p-2 rounded-3 mb-1 shadow-sm">
+
+                                        <div class="flex-shrink-0 me-3">
+                                            {% if film.poster_path %}
+                                                <img src="{{ imgUrls.small ~ film.poster_path }}"
+                                                     alt="Affiche de {{ film.title ?? film.name ?? 'Titre Inconnu' }}"
+                                                     class="rounded-1 film-poster-sm">
+                                            {% else %}
+                                                <div class="bg-secondary rounded-1 d-flex align-items-center justify-content-center text-white-50 film-poster-sm-placeholder">?</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="flex-grow-1">
+                                            <h5 class="mb-1 fw-bold link-primary">
+                                                {{ film.title ?? film.name ?? 'Titre Inconnu' }}
+                                            </h5>
+
+                                            {% if film.vote_average > 0 and film.vote_count >= 10 %}
+                                                <p class="mb-1 text-dark small">
+                                                    ⭐ <span class="fw-bold">{{ film.vote_average|number_format(1) }}</span>
+                                                </p>
+                                            {% endif %}
+
+                                            <p class="mb-0 text-muted small">
+                                                {% if film.character == 'Self' %}
+                                                    Rôle : <span class="fw-bold">Lui-même</span>
+                                                {% elseif film.character %}
+                                                    Rôle : <span class="fw-bold">{{ film.character }}</span>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <span class="badge bg-primary text-white fw-bold ms-3 p-2">{{ year }}</span>
+                                    </a>
+                                {% endfor %}
+                            </div>
+
+                            {% if not isFirstChunk %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+
+                    {% if totalChunks > 1 %}
+                        {% set remainingInitial = totalFilms - chunkSize %}
+                        <div class="text-center mt-3 mb-4" id="{{ id_prefix ~ '-load-more-container' }}">
+                            <button class="btn btn-outline-secondary d-inline-block fw-bold"
+                                    type="button"
+                                    id="{{ id_prefix ~ '-load-more-button' }}"
+                                    data-id-prefix="{{ id_prefix }}"
+                                    data-total-films="{{ totalFilms }}"
+                                    data-chunk-size="{{ chunkSize }}"
+                                    data-total-chunks="{{ totalChunks }}"
+                                    aria-expanded="false"
+                                    aria-controls="{{ id_prefix ~ '-chunk-1' }}">
+                                Afficher {{ min(chunkSize, remainingInitial) }} films de plus
+                            </button>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-info mt-3" role="alert">
+                        Aucun rôle d'acteur trouvé dans la filmographie.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/person_filmography.js') }}"></script>
+{% endblock %}
