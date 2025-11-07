@@ -85,3 +85,23 @@ a {
     padding: 10px 5px;
     text-align: center;
 }
+
+.actor-card-flex:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    transition: all 0.2s ease-in-out;
+}
+
+.h-person-portrait {
+    height: 450px;
+}
+
+.film-poster-sm, .film-poster-sm-placeholder {
+    width: 50px;
+    height: 75px;
+    object-fit: cover;
+}
+
+.film-poster-sm-placeholder {
+    font-size: 1rem;
+}
