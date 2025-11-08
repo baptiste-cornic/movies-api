@@ -26,10 +26,10 @@ final class TmdbProvider
 
     public function getMovieDetail(int $id): array
     {
-        $movieData = $this->tmdbClient->getMovieById($id);
+        $movieData = $this->tmdbClient->getMovieDetail($id);
 
-        $videoData = $this->getTrailer($id);
-        $castingData = $this->getCastingData($id);
+        $videoData = $this->getTrailer($movieData['videos']['results']);
+        $castingData = $this->getCastingData($movieData['credits']);
 
         return array_merge($movieData, [
             'video' => $videoData,
@@ -39,19 +39,18 @@ final class TmdbProvider
 
     public function getFullCast(int $id): array
     {
-        $movieData = $this->tmdbClient->getMovieById($id);
-        $castingData = $this->tmdbClient->getMovieCredits($id);
+        $movieDataWithCredits = $this->tmdbClient->getMovieCredits($id);
 
         $directors = [];
-        foreach ($castingData['crew'] as $member) {
+        foreach ($movieDataWithCredits['credits']['crew'] as $member) {
             if ($member['job'] === 'Director') {
                 $directors[] = $member;
             }
         }
 
-        return array_merge($movieData, [
+        return array_merge($movieDataWithCredits, [
             'casting' => [
-                'cast'      => $castingData['cast'],
+                'cast'      => $movieDataWithCredits['credits']['cast'],
                 'directors' => $directors,
             ],
         ]);
@@ -60,9 +59,8 @@ final class TmdbProvider
     public function getPersonDetail(int $personId): array
     {
         $personDetails = $this->tmdbClient->getPersonDetails($personId);
-        $personMovies = $this->tmdbClient->getPersonMovies($personId);
 
-        $filmography = array_filter($personMovies['cast'], fn ($movie) =>
+        $filmography = array_filter($personDetails['movie_credits']['cast'], fn ($movie) =>
             !empty($movie['release_date'])
         );
 
@@ -92,11 +90,9 @@ final class TmdbProvider
         return $moviesData;
     }
 
-    private function getTrailer(int $movieId): array
+    private function getTrailer(array $videos = []): array
     {
-        $content = $this->tmdbClient->getMovieVideos($movieId);
-
-        foreach ($content['results'] ?? [] as $video) {
+        foreach ($videos as $video) {
             if (($video['type'] ?? '') === 'Trailer') {
                 return $video;
             }
@@ -104,10 +100,8 @@ final class TmdbProvider
         return [];
     }
 
-    private function getCastingData(int $movieId): array
+    private function getCastingData(array $content): array
     {
-        $content = $this->tmdbClient->getMovieCredits($movieId);
-
         $mainCast = $this->getMainCast($content['cast']);
         $directors = $this->getDirecting($content['crew']);
 

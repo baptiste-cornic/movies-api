@@ -8,6 +8,10 @@ final class TmdbClient
 {
     private const DEFAULT_LANGUAGE = 'fr-FR';
 
+    private const APPEND_VIDEOS_CREDITS = 'videos,credits';
+    private const APPEND_CREDITS = 'credits';
+    private const APPEND_MOVIE_CREDITS = 'movie_credits';
+
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly string $apiKey
@@ -18,34 +22,31 @@ final class TmdbClient
         return $this->get(TmdbEndpoints::POPULAR_MOVIES);
     }
 
-    public function getMovieById(int $id): array
+    public function getMovieDetail(int $movieId): array
     {
-        $endpoint = TmdbEndpoints::MOVIE_DETAIL . $id;
-        return $this->get($endpoint);
-    }
-
-    public function getMovieVideos(int $movieId): array
-    {
-        $endpoint = sprintf(TmdbEndpoints::MOVIE_VIDEOS, $movieId);
-        return $this->get($endpoint);
+        return $this->getDetailEndpoint(
+            TmdbEndpoints::MOVIE_DETAIL,
+            $movieId,
+            self::APPEND_VIDEOS_CREDITS
+        );
     }
 
     public function getMovieCredits(int $movieId): array
     {
-        $endpoint = sprintf(TmdbEndpoints::MOVIE_CREDITS, $movieId);
-        return $this->get($endpoint);
+        return $this->getDetailEndpoint(
+            TmdbEndpoints::MOVIE_DETAIL,
+            $movieId,
+            self::APPEND_CREDITS
+        );
     }
 
     public function getPersonDetails(int $personId): array
     {
-        $endpoint = sprintf(TmdbEndpoints::PERSON_DETAIL, $personId);
-        return $this->get($endpoint);
-    }
-
-    public function getPersonMovies(int $personId): array
-    {
-        $endpoint = sprintf(TmdbEndpoints::PERSON_MOVIES, $personId);
-        return $this->get($endpoint);
+        return $this->getDetailEndpoint(
+            TmdbEndpoints::PERSON_DETAIL,
+            $personId,
+            self::APPEND_MOVIE_CREDITS
+        );
     }
 
     public function searchMovies(string $query): array
@@ -55,6 +56,19 @@ final class TmdbClient
         $options = [
             'query' => [
                 'query' => $query,
+            ],
+        ];
+
+        return $this->get($endpoint, $options);
+    }
+
+    private function getDetailEndpoint(string $baseEndpoint, int $id, string $appendTo): array
+    {
+        $endpoint = sprintf($baseEndpoint, $id);
+
+        $options = [
+            'query' => [
+                'append_to_response' => $appendTo,
             ],
         ];
 
