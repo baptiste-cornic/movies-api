@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -94,6 +95,28 @@ final class MoviesController extends AbstractController
             'chunkSize' => $chunkSize,
             'totalFilms' => $totalFilms,
             'totalChunks' => $totalChunks,
+        ]);
+    }
+
+    #[Route('/search', name: 'movie_search', methods: ['GET'])]
+    public function search(Request $request): Response
+    {
+        $query = $request->query->get('query');
+        $moviesData = [];
+
+        if ($query) {
+            try {
+                $moviesData = $this->tmdbProvider->searchMovies($query);
+            } catch (Throwable $exception) {
+                $this->addFlash('error', "Impossible d'effectuer la recherche.");
+                $this->logger->error('Erreur search page (API) : ' . $exception->getMessage());
+            }
+        }
+
+        return $this->render('movies/search_results.html.twig', [
+            'moviesData' => $moviesData,
+            'query' => $query,
+            'imgUrls' => self::IMAGE_URLS,
         ]);
     }
 }
