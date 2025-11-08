@@ -12,4 +12,5 @@ final class TmdbEndpoints
     public const MOVIE_CREDITS = '/movie/%d/credits';
     public const PERSON_DETAIL = '/person/%d';
     public const PERSON_MOVIES = '/person/%d/movie_credits';
+    public const MOVIES_SEARCH = '/search/movie';
 }
