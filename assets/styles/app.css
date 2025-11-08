@@ -105,3 +105,14 @@ a {
 .film-poster-sm-placeholder {
     font-size: 1rem;
 }
+
+.search-poster-img {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.search-poster-placeholder {
+    width: 100px;
+    height: 150px;
+}
