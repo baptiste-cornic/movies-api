@@ -78,6 +78,20 @@ final class TmdbProvider
         ];
     }
 
+    public function searchMovies($query): array
+    {
+        $content = $this->tmdbClient->searchMovies($query);
+
+        $moviesData = [];
+        foreach ($content['results'] as $movie) {
+            if (!empty($movie['poster_path']) || !empty($movie['overview'])) {
+                $moviesData[] = $movie;
+            }
+        }
+
+        return $moviesData;
+    }
+
     private function getTrailer(int $movieId): array
     {
         $content = $this->tmdbClient->getMovieVideos($movieId);
