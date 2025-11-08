@@ -48,6 +48,19 @@ final class TmdbClient
         return $this->get($endpoint);
     }
 
+    public function searchMovies(string $query): array
+    {
+        $endpoint = TmdbEndpoints::MOVIES_SEARCH;
+
+        $options = [
+            'query' => [
+                'query' => $query,
+            ],
+        ];
+
+        return $this->get($endpoint, $options);
+    }
+
     private function get(string $endpoint, array $options = []): array
     {
         $url = TmdbEndpoints::BASE_API_URL . $endpoint;
