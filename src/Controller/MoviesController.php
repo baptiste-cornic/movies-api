@@ -72,12 +72,14 @@ final class MoviesController extends AbstractController
     }
 
     #[Route('/person/{id}', name: 'person_detail', requirements: ['id' => '\d+'])]
-    public function personDetail(int $id): Response
+    public function personDetail(int $id, Request $request): Response
     {
         try {
             $personData = $this->tmdbProvider->getPersonDetail($id);
 
-            $filmography = $personData['personMovies']['cast'];
+            $sortType = $request->query->get('sort', 'date');
+            $filmography = $this->tmdbProvider->sortMovies($personData['personMovies']['cast'], $sortType);
+
             $chunkSize = 10;
             $totalFilms = count($filmography);
             $totalChunks = ceil($totalFilms / $chunkSize);
