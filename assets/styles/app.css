@@ -116,3 +116,9 @@ a {
     width: 100px;
     height: 150px;
 }
+
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active {
+    background-color: #dee2e6 !important;
+    color: #343a40 !important;
+}
