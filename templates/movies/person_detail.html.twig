@@ -6,6 +6,7 @@
 
 {% block body %}
     {% set id_prefix = 'cast' %}
+    {% set currentSort = app.request.query.get('sort', 'date') %}
 
     <div class="container mt-5">
         <div class="row">
@@ -50,14 +51,33 @@
             </div>
 
             <div class="col-md-8 border-start ps-4">
-                <h2 class="mb-4 display-5 fw-bold d-flex align-items-center justify-content-between">
-                    Filmographie
-                    {% if totalFilms > 0 %}
-                        <span class="badge bg-secondary fs-6 rounded-pill flex-shrink-0">
-                            {{ totalFilms }} films
-                        </span>
-                    {% endif %}
-                </h2>
+                <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
+                    <h2 class="display-5 fw-bold mb-0 d-flex align-items-center">Filmographie</h2>
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Trier par :
+                                <span class="fw-bold">
+                                    {{ currentSort == 'date' ? 'Date' : 'Note' }}
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item {% if currentSort == 'date' %}active{% endif %}"
+                                       href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'sort': 'date'})) }}">
+                                        Date de sortie
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {% if currentSort == 'rating' %}active{% endif %}"
+                                       href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'sort': 'rating'})) }}">
+                                        Note moyenne
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
                 {% if totalFilms > 0 %}
                     <ul class="list-group list-group-flush" id="{{ id_prefix ~ '-container' }}">
@@ -107,7 +127,7 @@
                                                 {% endif %}
                                             </p>
                                         </div>
-                                        <span class="badge bg-primary text-white fw-bold ms-3 p-2">{{ year }}</span>
+                                        <span class="badge bg-secondary text-white fw-bold ms-3 p-2">{{ year }}</span>
                                     </a>
                                 {% endfor %}
                             </div>
