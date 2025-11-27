@@ -3,6 +3,13 @@
 {% block title %}Recherche "{{ query }}" - Movies API{% endblock %}
 
 {% block body %}
+    {% set currentSort = app.request.query.get('sort', 'date') %}
+    {% set sortOptions = {
+        'date': 'Date de sortie',
+        'rating': 'Note moyenne'
+    } %}
+    {% set baseParams = app.request.attributes.get('_route_params')|merge({'query': query}) %}
+
     <div class="container mt-4">
 
         {% if query %}
@@ -12,7 +19,29 @@
         {% endif %}
 
         {% if moviesData is not empty %}
-            <p class="lead text-muted">{{ moviesData|length }} film(s) trouvé(s).</p>
+            <div class="d-flex align-items-center justify-content-between mb-1 pb-2">
+                <p class="lead text-muted">{{ moviesData|length }} film(s) trouvé(s).</p>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Trier par :
+                            <span class="fw-bold">
+                                    {{ currentSort == 'date' ? 'Date' : 'Note' }}
+                                </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% for sortKey, sortLabel in sortOptions %}
+                                <li>
+                                    <a class="dropdown-item {% if currentSort == sortKey %}active{% endif %}"
+                                       href="{{ path(app.request.attributes.get('_route'), baseParams|merge({'sort': sortKey})) }}">
+                                        {{ sortLabel }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
             <div class="list-group mb-5">
                 {% for movie in moviesData %}
