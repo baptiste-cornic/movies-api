@@ -103,7 +103,9 @@ final class TmdbProvider
 
                 return $bHasEnoughVotes <=> $aHasEnoughVotes;
             });
-        } else {
+        }
+
+        if ($sortType === 'date') {
             usort($movies, function ($a, $b) {
                 return ($b['release_date'] ?? '') <=> ($a['release_date'] ?? '');
             });

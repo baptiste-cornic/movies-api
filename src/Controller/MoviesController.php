@@ -109,7 +109,7 @@ final class MoviesController extends AbstractController
         if ($query) {
             try {
                 $moviesData = $this->tmdbProvider->searchMovies($query);
-                $sortType = $request->query->get('sort', 'date');
+                $sortType = $request->query->get('sort', 'relevance');
                 $moviesData = $this->tmdbProvider->sortMovies($moviesData, $sortType);
             } catch (Throwable $exception) {
                 $this->addFlash('error', "Impossible d'effectuer la recherche.");
