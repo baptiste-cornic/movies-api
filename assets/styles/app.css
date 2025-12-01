@@ -16,14 +16,67 @@ a {
     align-items: center;
 }
 
+.movie-img-container {
+    overflow: hidden;
+    position: relative;
+}
+
 .movie-img-container img {
     height: 100%;
     width: auto;
     object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.card:hover .movie-img-container img {
+    transform: scale(1.1);
+}
+
+.carousel-nav-btn {
+    width: 40px;
+    height: 40px;
+    z-index: 20;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.carousel-nav-btn:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.carousel-transition {
+    transition: transform 0.4s ease;
+}
+
+.movie-card-width {
+    width: 200px;
 }
 
 .star-empty {
     color: #dcdcdc;
+}
+
+[data-carousel-container] {
+    max-width: calc((200px * 5) + (1rem * 4));
+}
+
+@media (max-width: 1400px) {
+    [data-carousel-container] {
+        max-width: calc((200px * 4) + (1rem * 3));
+    }
+}
+
+@media (max-width: 1100px) {
+    [data-carousel-container] {
+        max-width: calc((200px * 3) + (1rem * 2));
+    }
+}
+
+@media (max-width: 768px) {
+    [data-carousel-container] {
+        max-width: calc((200px * 2) + (1rem * 1));
+    }
 }
 
 /* movies/details */
@@ -90,10 +143,6 @@ a {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
     transition: all 0.2s ease-in-out;
-}
-
-.h-person-portrait {
-    height: 450px;
 }
 
 .film-poster-sm, .film-poster-sm-placeholder {
