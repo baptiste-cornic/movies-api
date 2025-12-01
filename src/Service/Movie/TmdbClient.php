@@ -22,6 +22,11 @@ final class TmdbClient
         return $this->get(TmdbEndpoints::POPULAR_MOVIES);
     }
 
+    public function getTopRatedMovies(): array
+    {
+        return $this->get(TmdbEndpoints::TOP_MOVIES);
+    }
+
     public function getMovieDetail(int $movieId): array
     {
         return $this->getDetailEndpoint(

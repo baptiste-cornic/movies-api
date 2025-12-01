@@ -24,6 +24,12 @@ final class TmdbProvider
         return $content['results'] ?? [];
     }
 
+    public function getTopRatedMovies(): array
+    {
+        $content = $this->tmdbClient->getTopRatedMovies();
+        return $content['results'] ?? [];
+    }
+
     public function getMovieDetail(int $id): array
     {
         $movieData = $this->tmdbClient->getMovieDetail($id);
