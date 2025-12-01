@@ -23,16 +23,19 @@ final class MoviesController extends AbstractController
     #[Route('/', name: 'movies')]
     public function index(): Response
     {
-        $moviesData = [];
+        $popularMoviesData = [];
+        $topRatedMoviesData = [];
         try {
-            $moviesData = $this->tmdbProvider->getPopularMovies();
+            $popularMoviesData = $this->tmdbProvider->getPopularMovies();
+            $topRatedMoviesData = $this->tmdbProvider->getTopRatedMovies();
         } catch (Throwable $exception) {
             $this->addFlash('error', 'Impossible de charger la liste des films. Veuillez réessayer plus tard.');
             $this->logger->error('Erreur Homepage (API) : ' . $exception->getMessage());
         }
 
         return $this->render('movies/index.html.twig', [
-            'moviesData' => $moviesData,
+            'popularMovies' => $popularMoviesData,
+            'topRatedMovies' => $topRatedMoviesData,
             'imgUrls' => self::IMAGE_URLS,
         ]);
     }
