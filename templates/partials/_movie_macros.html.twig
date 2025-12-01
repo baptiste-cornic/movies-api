@@ -1,0 +1,47 @@
+{% macro movieCarousel(movies, carouselId, imgUrls) %}
+<div class="position-relative px-5 mb-1">
+    <button class="btn btn-secondary rounded-circle position-absolute top-50 start-0 translate-middle-y
+            d-flex align-items-center justify-content-center p-0 carousel-nav-btn" data-carousel="{{ carouselId }}">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <div class="d-flex justify-content-center">
+        <div class="overflow-hidden" data-carousel-container="{{ carouselId }}">
+            <div class="row row-cols-auto g-3 flex-nowrap carousel-transition" data-carousel-track="{{ carouselId }}">
+                {% for movie in movies %}
+                    <div class="col">
+                        <div class="card border-0 movie-card-width">
+                            <a href="{{ path('movie_detail', { id: movie.id }) }}" class="text-decoration-none">
+                                <div class="movie-img-container">
+                                    <img src="{{ imgUrls.original }}{{ movie.poster_path }}" alt="{{ movie.title }}" class="card-img-top">
+                                </div>
+                                {% set rating = (movie.vote_average / 2)|round(1) %}
+                                <div class="movie-rating text-center" title="{{ rating }}/5 sur {{ movie.vote_count }} votes">
+                                    {% for i in 1..5 %}
+                                        {% if i <= rating %}
+                                            <i class="fa fa-star text-warning"></i>
+                                        {% elseif i - rating < 1 %}
+                                            <i class="fa fa-star-half-alt text-warning"></i>
+                                        {% else %}
+                                            <i class="fa-regular fa-star star-empty"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <p class="text-center fw-bold mt-auto text-dark" title="{{ movie.title }}">
+                                    {{ movie.title|length > 22 ? movie.title|slice(0, 22) ~ '...' : movie.title }}
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+        <button class="btn btn-secondary rounded-circle position-absolute top-50 end-0 translate-middle-y d-flex
+            align-items-center justify-content-center p-0 carousel-nav-btn"
+            data-carousel="{{ carouselId }}" data-next="true">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+{% endmacro %}
