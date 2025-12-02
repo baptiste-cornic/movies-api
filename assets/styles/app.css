@@ -171,3 +171,15 @@ a {
     background-color: #dee2e6 !important;
     color: #343a40 !important;
 }
+
+.provider-logo {
+    width: 45px;
+    height: 45px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.provider-logo:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
