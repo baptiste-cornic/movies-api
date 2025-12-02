@@ -18,66 +18,9 @@
     </div>
 
     <div class="container mt-5">
-
         <div class="row">
-
             <div class="col-md-4">
-                <div class="text-center">
-                    {% if movieData.poster_path %}
-                        <img src="{{ imgUrls.medium ~ movieData.poster_path }}"
-                             alt="Affiche du film {{ movieData.title }}"
-                             class="img-fluid rounded shadow-lg movie-detail-poster">
-                    {% else %}
-                        <div class="card p-4 bg-light shadow">
-                            <p class="text-muted mb-0">Affiche non disponible</p>
-                        </div>
-                    {% endif %}
-                    {% if movieData.vote_average > 0 %}
-                        <div class="mt-4 p-3 bg-light rounded shadow-sm">
-                            <p class="h3 mb-0 text-dark">
-                                ⭐ {{ movieData.vote_average|number_format(1) }} <small class="text-muted">/ 10</small>
-                            </p>
-                            <p class="text-muted mb-0">({{ movieData.vote_count }} votes)</p>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <hr class="my-4">
-
-                <dl class="row">
-                    <dt class="col-sm-5">Date de sortie :</dt>
-                    <dd class="col-sm-7 fw-bold">
-                        {{ movieData.release_date ? movieData.release_date|date('d/m/Y') : 'Inconnue' }}
-                    </dd>
-
-                    <dt class="col-sm-5">Durée :</dt>
-                    <dd class="col-sm-7">
-                        {{ movieData.runtime ? (movieData.runtime // 60) ~ 'h ' ~ (movieData.runtime % 60) ~ 'min' : 'Inconnue' }}
-                    </dd>
-
-                    <dt class="col-sm-5">Genres :</dt>
-                    <dd class="col-sm-7">
-                        {% for genre in movieData.genres %}
-                            <span class="badge rounded-pill bg-primary me-1">{{ genre.name }}</span>
-                        {% else %}
-                            Non spécifiés
-                        {% endfor %}
-                    </dd>
-
-                    <dt class="col-sm-5">Langue originale :</dt>
-                    <dd class="col-sm-7">{{ movieData.original_language|locale_name('fr')|capitalize }}</dd>
-
-                    {% if movieData.original_title != movieData.title %}
-                        <dt class="col-sm-5">Titre original :</dt>
-                        <dd class="col-sm-7">{{ movieData.original_title }}</dd>
-                    {% endif %}
-
-                    <dt class="col-sm-5">Budget :</dt>
-                    <dd class="col-sm-7">
-                        {{ movieData.budget > 0 ? movieData.budget|number_format(0, ',', ' ') ~ ' $' : 'Non communiqué' }}
-                    </dd>
-                </dl>
-
+                {% include 'partials/_movie_details_aside.html.twig' %}
             </div>
 
             <div class="col-md-8 border-start ps-4">
