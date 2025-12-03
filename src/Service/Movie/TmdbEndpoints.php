@@ -11,4 +11,5 @@ final class TmdbEndpoints
     public const MOVIE_DETAIL = '/movie/%d';
     public const PERSON_DETAIL = '/person/%d';
     public const MOVIES_SEARCH = '/search/movie';
+    public const MOVIES_PROVIDERS = '/movie/%d/watch/providers';
 }

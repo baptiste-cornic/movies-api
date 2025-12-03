@@ -27,6 +27,12 @@ final class TmdbClient
         return $this->get(TmdbEndpoints::TOP_MOVIES);
     }
 
+    public function getMovieProviders(int $movieId): array
+    {
+        $endpoint = sprintf(TmdbEndpoints::MOVIES_PROVIDERS, $movieId);
+        return $this->get($endpoint);
+    }
+
     public function getMovieDetail(int $movieId): array
     {
         return $this->getDetailEndpoint(
