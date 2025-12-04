@@ -3,6 +3,27 @@ a {
     text-decoration: none;
 }
 
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.custom-search-btn {
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+}
+
+.custom-search-btn:hover {
+    background-color: rgba(208, 208, 208, 0.4);
+}
+
 .card:hover {
     cursor: pointer;
 }
