@@ -11,9 +11,9 @@
         <h2 class="mb-3">Top des critiques</h2>
         {{ movieMacros.movieCarousel(topRatedMovies, 'toprated', imgUrls) }}
     </div>
+{% endblock %}
 
-    {% block javascripts %}
-        {{ parent() }}
-        <script src="{{ asset('js/caroussel.js') }}"></script>
-    {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/caroussel.js') }}"></script>
 {% endblock %}

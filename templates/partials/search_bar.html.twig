@@ -1,7 +1,17 @@
-<form class="d-flex" role="search" action="{{ path('movie_search') }}" method="GET">
-    <input class="form-control me-2" type="search" placeholder="Rechercher un film..." aria-label="Rechercher"
-           name="query" size="50">
-    <button class="btn btn-outline-light" type="submit">
-        <i class="fas fa-search"></i>
-    </button>
-</form>
+<div class="search-container position-relative">
+    <form class="d-flex" role="search" action="{{ path('movie_search') }}" method="GET">
+        <div class="position-relative" style="width: 100%;" id="input-wrapper">
+            <input class="form-control pe-5" type="search" placeholder="Rechercher un film..." aria-label="Rechercher"
+                   name="query" size="50" id="search-bar" autocomplete="off">
+
+            <button class="btn position-absolute top-50 end-0 translate-middle-y me-1 custom-search-btn" type="submit"
+                    style="border: none; padding: 0.25rem 0.5rem;">
+                <i class="fas fa-search"></i>
+            </button>
+
+        </div>
+    </form>
+    <div id="search-results" class="position-absolute bg-white border rounded shadow-sm overflow-hidden"
+         style="z-index: 1000; display: none;">
+    </div>
+</div>
