@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -125,5 +126,16 @@ final class MoviesController extends AbstractController
             'query' => $query,
             'imgUrls' => self::IMAGE_URLS,
         ]);
+    }
+
+    #[Route('/search_live', name: 'movie_search_live')]
+    public function searchLive(Request $request): JsonResponse
+    {
+        $query = $request->query->get('q');
+
+        $moviesData = $this->tmdbProvider->searchMovies($query);
+        $moviesData = array_slice($moviesData, 0, 5);
+
+        return new JsonResponse($moviesData);
     }
 }
