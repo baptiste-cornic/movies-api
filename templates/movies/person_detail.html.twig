@@ -121,9 +121,7 @@
                                             {% endif %}
 
                                             <p class="mb-0 text-muted small">
-                                                {% if film.character == 'Self' %}
-                                                    Rôle : <span class="fw-bold">Lui-même</span>
-                                                {% elseif film.character %}
+                                                {% if film.character %}
                                                     Rôle : <span class="fw-bold">{{ film.character }}</span>
                                                 {% endif %}
                                             </p>
