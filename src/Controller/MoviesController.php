@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Service\Movie\TmdbProvider;
+use App\Service\Movie\TmdbTransformer;
 use Throwable;
 
 final class MoviesController extends AbstractController
@@ -17,6 +18,7 @@ final class MoviesController extends AbstractController
 
     public function __construct(
         private readonly TmdbProvider $tmdbProvider,
+        private readonly TmdbTransformer $tmdbTransformer,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -29,6 +31,8 @@ final class MoviesController extends AbstractController
         try {
             $popularMoviesData = $this->tmdbProvider->getPopularMovies();
             $topRatedMoviesData = $this->tmdbProvider->getTopRatedMovies();
+            $popularMoviesData = $this->tmdbTransformer->formatMoviesData($popularMoviesData);
+            $topRatedMoviesData = $this->tmdbTransformer->formatMoviesData($topRatedMoviesData);
         } catch (Throwable $exception) {
             $this->addFlash('error', 'Impossible de charger la liste des films. Veuillez réessayer plus tard.');
             $this->logger->error('Erreur Homepage (API) : ' . $exception->getMessage());
@@ -82,7 +86,8 @@ final class MoviesController extends AbstractController
             $personData = $this->tmdbProvider->getPersonDetail($id);
 
             $sortType = $request->query->get('sort', 'date');
-            $filmography = $this->tmdbProvider->sortMovies($personData['personMovies']['cast'], $sortType);
+            $filmography = $this->tmdbTransformer->formatMoviesData($personData['personMovies']['cast']);
+            $filmography = $this->tmdbTransformer->sortMovies($filmography, $sortType);
 
             $chunkSize = 10;
             $totalFilms = count($filmography);
@@ -113,8 +118,9 @@ final class MoviesController extends AbstractController
         if ($query) {
             try {
                 $moviesData = $this->tmdbProvider->searchMovies($query);
+                $moviesData = $this->tmdbTransformer->formatMoviesData($moviesData);
                 $sortType = $request->query->get('sort', 'relevance');
-                $moviesData = $this->tmdbProvider->sortMovies($moviesData, $sortType);
+                $moviesData = $this->tmdbTransformer->sortMovies($moviesData, $sortType);
             } catch (Throwable $exception) {
                 $this->addFlash('error', "Impossible d'effectuer la recherche.");
                 $this->logger->error('Erreur search page (API) : ' . $exception->getMessage());
@@ -131,11 +137,28 @@ final class MoviesController extends AbstractController
     #[Route('/search_live', name: 'movie_search_live')]
     public function searchLive(Request $request): JsonResponse
     {
-        $query = $request->query->get('q');
+        try {
+            $query = $request->query->get('q');
 
-        $moviesData = $this->tmdbProvider->searchMovies($query);
-        $moviesData = array_slice($moviesData, 0, 5);
+            if (empty($query)) {
+                return new JsonResponse(
+                    ['error' => 'Search query is required'],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
 
-        return new JsonResponse($moviesData);
+            $moviesData = $this->tmdbProvider->searchMovies($query);
+            $moviesData = array_slice($moviesData, 0, 5);
+            $moviesData = $this->tmdbTransformer->formatMoviesData($moviesData);
+
+            return new JsonResponse($moviesData);
+
+        } catch (Throwable $exception) {
+            $this->logger->error('Erreur search Live : ' . $exception->getMessage());
+            return new JsonResponse(
+                ['error' => 'An error occurred while searching movies'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }
