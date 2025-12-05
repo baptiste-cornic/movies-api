@@ -18,6 +18,7 @@ final class TmdbProvider
 
     public function __construct(
         private readonly TmdbClient $tmdbClient,
+        private readonly TmdbTransformer $tmdbTransformer,
     ) {}
 
     public function getPopularMovies(): array
@@ -79,7 +80,7 @@ final class TmdbProvider
             strtotime($b['release_date']) <=> strtotime($a['release_date'])
         );
 
-        $personMovies['cast'] = $filmography;
+        $personMovies['cast'] = $this->tmdbTransformer->formatMoviesData($filmography);;
 
         return [
             'personDetails' => $personDetails,
@@ -99,29 +100,6 @@ final class TmdbProvider
         }
 
         return $moviesData;
-    }
-
-    public function sortMovies(array $movies, string $sortType): array
-    {
-        if ($sortType === 'rating') {
-            usort($movies, function ($a, $b) {
-                $aHasEnoughVotes = ($a['vote_count'] ?? 0) >= 10;
-                $bHasEnoughVotes = ($b['vote_count'] ?? 0) >= 10;
-
-                if ($aHasEnoughVotes === $bHasEnoughVotes) {
-                    return ($b['vote_average'] ?? 0) <=> ($a['vote_average'] ?? 0);
-                }
-
-                return $bHasEnoughVotes <=> $aHasEnoughVotes;
-            });
-        }
-
-        if ($sortType === 'date') {
-            usort($movies, function ($a, $b) {
-                return ($b['release_date'] ?? '') <=> ($a['release_date'] ?? '');
-            });
-        }
-        return $movies;
     }
 
     private function getTrailer(array $videos = []): array
