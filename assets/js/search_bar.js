@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(url);
 
             if (!response.ok) {
-                throw new Error('Erreur réseau ou code HTTP non-200');
+                throw new Error('Une erreur est survenue.');
             }
 
             const data = await response.json();
