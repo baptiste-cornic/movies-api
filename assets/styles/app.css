@@ -49,6 +49,13 @@ input[type="search"]::-webkit-search-cancel-button {
     transition: transform 0.5s ease;
 }
 
+.movie-rating-badge {
+    font-size: 0.9rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    backdrop-filter: blur(2px);
+}
+
 .card:hover .movie-img-container img {
     transform: scale(1.1);
 }
