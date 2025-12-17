@@ -2,23 +2,24 @@
 
 namespace App\Controller;
 
+use App\Constant\TmdbImageUrl;
+use App\Service\Movie\Interface\TmdbProviderInterface;
+use App\Service\Movie\Interface\TmdbTransformerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Service\Movie\TmdbProvider;
-use App\Service\Movie\TmdbTransformer;
 use Throwable;
 
 final class MoviesController extends AbstractController
 {
-    private const IMAGE_URLS = TmdbProvider::SIZE_IMG_URL_ARRAY;
+    private const IMAGE_URLS = TmdbImageUrl::ALL;
 
     public function __construct(
-        private readonly TmdbProvider $tmdbProvider,
-        private readonly TmdbTransformer $tmdbTransformer,
+        private readonly TmdbProviderInterface $tmdbProvider,
+        private readonly TmdbTransformerInterface $tmdbTransformer,
         private readonly LoggerInterface $logger
     ) {
     }

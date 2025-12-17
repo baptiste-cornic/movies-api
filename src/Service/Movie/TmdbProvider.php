@@ -2,23 +2,14 @@
 
 namespace App\Service\Movie;
 
-final class TmdbProvider
+use App\Service\Movie\Interface\TmdbProviderInterface;
+use App\Service\Movie\Interface\TmdbTransformerInterface;
+
+final readonly class TmdbProvider implements TmdbProviderInterface
 {
-    private const ORIGINAL_SIZE_IMG_URL = 'https://image.tmdb.org/t/p/original';
-    private const MEDIUM_SIZE_IMG_URL = 'https://image.tmdb.org/t/p/w500';
-    private const SMALL_SIZE_IMG_URL = 'https://image.tmdb.org/t/p/w185';
-    private const VERY_SMALL_SIZE_IMG_URL = 'https://image.tmdb.org/t/p/w45';
-
-    public const SIZE_IMG_URL_ARRAY = [
-        'original' => self::ORIGINAL_SIZE_IMG_URL,
-        'medium' => self::MEDIUM_SIZE_IMG_URL,
-        'small' => self::SMALL_SIZE_IMG_URL,
-        'very_small' => self::VERY_SMALL_SIZE_IMG_URL,
-    ];
-
     public function __construct(
-        private readonly TmdbClient $tmdbClient,
-        private readonly TmdbTransformer $tmdbTransformer,
+        private TmdbClient $tmdbClient,
+        private TmdbTransformerInterface $tmdbTransformer,
     ) {}
 
     public function getPopularMovies(): array

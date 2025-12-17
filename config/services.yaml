@@ -20,5 +20,7 @@ services:
         arguments:
             $apiKey: '%env(API_KEY)%'
 
+    App\Service\Movie\Interface\TmdbProviderInterface: '@App\Service\Movie\TmdbProvider'
+    App\Service\Movie\Interface\TmdbTransformerInterface: '@App\Service\Movie\TmdbTransformer'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

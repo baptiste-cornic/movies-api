@@ -2,7 +2,9 @@
 
 namespace App\Service\Movie;
 
-class TmdbTransformer
+use App\Service\Movie\Interface\TmdbTransformerInterface;
+
+class TmdbTransformer implements TmdbTransformerInterface
 {
     public function sortMovies(array $movies, string $sortType): array
     {
