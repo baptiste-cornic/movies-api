@@ -35,6 +35,7 @@
                     <div class="actor-grid-top-cast d-flex flex-wrap justify-content-start">
                         {% for director in movieData.casting.directors %}
                             <div class="actor-card-flex rounded-3">
+                                <a href="{{ path('person_detail', { id: director.id }) }}" class="d-block">
                                 {% if director.profile_path %}
                                     <img src="{{ imgUrls.small ~ director.profile_path }}"
                                          alt="{{ director.name }}"
@@ -43,6 +44,7 @@
                                     <div class="actor-profile bg-dark d-flex align-items-center justify-content-center text-white-50 mx-auto">?</div>
                                 {% endif %}
                                 <strong class="actor-text-info">{{ director.name }}</strong>
+                                </a>
                             </div>
                         {% endfor %}
                     </div>

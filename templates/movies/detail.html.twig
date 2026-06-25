@@ -45,9 +45,11 @@
 
                     {% if movieData.casting.directors is not empty %}
                         <h2 class="h4 mb-3">Réalisateur(s)</h2>
-                        <p>
+                        <p>-
                             {% for director in movieData.casting.directors %}
-                                <span class="badge bg-secondary me-2 p-2 fw-normal">{{ director.name }}</span>
+                                <a href="{{ path('person_detail', { id: director.id }) }}" class="d-block">
+                                    <span class="badge bg-secondary me-2 p-2 fw-normal">{{ director.name }}</span>
+                                </a>
                             {% endfor %}
                         </p>
                     {% endif %}
