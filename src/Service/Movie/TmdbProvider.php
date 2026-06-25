@@ -63,9 +63,15 @@ final readonly class TmdbProvider implements TmdbProviderInterface
     {
         $personDetails = $this->tmdbClient->getPersonDetails($personId);
 
-        $filmography = array_filter($personDetails['movie_credits']['cast'], fn ($movie) =>
-            !empty($movie['release_date'])
-        );
+        if ($personDetails['known_for_department'] === 'Directing') {
+            $filmography = array_filter($personDetails['movie_credits']['crew'],
+                fn ($movie) => !empty($movie['release_date']) && ($movie['job'] ?? null) === 'Director'
+            );
+        } else {
+            $filmography = array_filter($personDetails['movie_credits']['cast'], fn ($movie) =>
+                !empty($movie['release_date'])
+            );
+        }
 
         usort($filmography, fn ($a, $b) =>
             strtotime($b['release_date']) <=> strtotime($a['release_date'])
