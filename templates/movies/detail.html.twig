@@ -6,7 +6,7 @@
 
 {% block body %}
 
-    <div class="movie-header" style="background-image: url('{{ imgUrls.original ~ movieData.backdrop_path }}');">
+    <div class="movie-header" {% if movieData.backdrop_path %}style="background-image: url('{{ imgUrls.original ~ movieData.backdrop_path }}');"{% endif %}>
         <div class="container header-content">
             <div class="row">
                 <div class="col-md-9 mx-auto text-center">

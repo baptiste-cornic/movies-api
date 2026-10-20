@@ -9,14 +9,14 @@
         </div>
     {% endif %}
 
-    <div class="mt-4 p-3 bg-light rounded shadow-sm">
-        {% if movieData.vote_average > 0 %}
+    {% if movieData.vote_average > 0 %}
+        <div class="mt-4 p-3 bg-light rounded shadow-sm">
             <p class="h3 mb-0 text-dark">
                 ⭐ {{ movieData.vote_average|number_format(1) }} <small class="text-muted">/ 10</small>
             </p>
             <p class="text-muted mb-0">({{ movieData.vote_count }} votes)</p>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
 </div>
 
 <hr class="my-4">

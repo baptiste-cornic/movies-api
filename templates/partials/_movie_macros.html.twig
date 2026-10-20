@@ -13,7 +13,11 @@
                         <div class="card border-0 movie-card-width">
                             <a href="{{ path('movie_detail', { id: movie.id }) }}" class="text-decoration-none">
                                 <div class="movie-img-container">
-                                    <img src="{{ imgUrls.original }}{{ movie.poster_path }}" alt="{{ movie.title }}" class="card-img-top">
+                                    {% if movie.poster_path %}
+                                        <img src="{{ imgUrls.medium ~ movie.poster_path }}" alt="{{ movie.title }}" class="card-img-top">
+                                    {% else %}
+                                        <div class="w-100 h-100 bg-secondary d-flex align-items-center justify-content-center text-white-50">?</div>
+                                    {% endif %}
                                     <div class="position-absolute bottom-0 start-0 m-2">
                                         <span class="movie-rating-badge bg-dark bg-opacity-75 text-warning fw-bold px-2 py-1">
                                             {{ movie.vote_average|round(1) }} ⭐
@@ -21,7 +25,7 @@
                                     </div>
                                 </div>
                                 <p class="text-center fw-bold mt-auto text-dark" title="{{ movie.title }}">
-                                    {{ movie.title|length > 22 ? movie.title|slice(0, 22) ~ '...' : movie.title }}
+                                    {{ movie.title|u.truncate(22, '…') }}
                                 </p>
                             </a>
                         </div>

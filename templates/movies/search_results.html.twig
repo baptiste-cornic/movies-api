@@ -3,12 +3,15 @@
 {% block title %}Recherche "{{ query }}" - Movies API{% endblock %}
 
 {% block body %}
-    {% set currentSort = app.request.query.get('sort', 'relevance') %}
     {% set sortOptions = {
         'relevance': 'Pertinence',
         'date': 'Date',
         'rating': 'Note moyenne'
     } %}
+    {% set currentSort = app.request.query.get('sort', 'relevance') %}
+    {% if currentSort not in sortOptions|keys %}
+        {% set currentSort = 'relevance' %}
+    {% endif %}
     {% set baseParams = app.request.attributes.get('_route_params')|merge({'query': query}) %}
 
     <div class="container mt-4">
@@ -80,7 +83,7 @@
 
                                 {% if movie.overview %}
                                     <p class="mb-0 text-muted small">
-                                        {{ movie.overview|length > 400 ? movie.overview|slice(0, 400) ~ '...' : movie.overview }}
+                                        {{ movie.overview|u.truncate(400, '…', false) }}
                                     </p>
                                 {% endif %}
                             </div>

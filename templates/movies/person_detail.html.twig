@@ -6,11 +6,14 @@
 
 {% block body %}
     {% set id_prefix = 'cast' %}
-    {% set currentSort = app.request.query.get('sort', 'date') %}
     {% set sortOptions = {
         'date': 'Date',
         'rating': 'Note moyenne'
     } %}
+    {% set currentSort = app.request.query.get('sort', 'date') %}
+    {% if currentSort not in sortOptions|keys %}
+        {% set currentSort = 'date' %}
+    {% endif %}
     {% set baseParams = app.request.attributes.get('_route_params') %}
 
     <div class="container mt-5">
@@ -33,7 +36,7 @@
                         <dd class="col-sm-8">{{ personData.personDetails.birthday ? personData.personDetails.birthday|format_datetime(locale='fr', date_format='long', time_format='none') : 'Inconnue' }}</dd>
                         {% if personData.personDetails.deathday %}
                             <dt class="col-sm-4 fw-bold">Décédé(e) le :</dt>
-                            <dd class="col-sm-8">{{ personData.personDetails.deathday ? personData.personDetails.deathday|format_datetime(locale='fr', date_format='long', time_format='none') : 'Inconnue' }}</dd>
+                            <dd class="col-sm-8">{{ personData.personDetails.deathday|format_datetime(locale='fr', date_format='long', time_format='none') }}</dd>
                         {% endif %}
                         {% if personData.personDetails.place_of_birth %}
                             <dt class="col-sm-4 fw-bold">Lieu de naissance :</dt>
@@ -49,7 +52,7 @@
                     <div class="text-start">
                         <h2 class="h5 mb-3 fw-bold">Biographie</h2>
                         <p class="small text-muted text-justify">
-                            {{ personData.personDetails.biography|nl2br|raw }}
+                            {{ personData.personDetails.biography|nl2br }}
                         </p>
                     </div>
                 {% endif %}
@@ -81,7 +84,7 @@
                 </div>
 
                 {% if totalFilms > 0 %}
-                    <ul class="list-group list-group-flush" id="{{ id_prefix ~ '-container' }}">
+                    <div class="list-group list-group-flush" id="{{ id_prefix ~ '-container' }}">
                         {% for i in 0..totalChunks - 1 %}
                             {% set startIndex = i * chunkSize %}
                             {% set chunkId = id_prefix ~ '-chunk-' ~ i %}
@@ -102,7 +105,7 @@
                                         <div class="flex-shrink-0 me-3">
                                             {% if film.poster_path %}
                                                 <img src="{{ imgUrls.small ~ film.poster_path }}"
-                                                     alt="Affiche de {{ film.title ?? film.name ?? 'Titre Inconnu' }}"
+                                                     alt="Affiche de {{ film.title }}"
                                                      class="rounded-1 film-poster-sm">
                                             {% else %}
                                                 <div class="bg-secondary rounded-1 d-flex align-items-center justify-content-center text-white-50 film-poster-sm-placeholder">?</div>
@@ -111,7 +114,7 @@
 
                                         <div class="flex-grow-1">
                                             <h5 class="mb-1 fw-bold link-primary">
-                                                {{ film.title ?? film.name ?? 'Titre Inconnu' }}
+                                                {{ film.title }}
                                             </h5>
 
                                             {% if film.vote_average > 0 and film.vote_count >= 10 %}
@@ -135,7 +138,7 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
-                    </ul>
+                    </div>
 
                     {% if totalChunks > 1 %}
                         {% set remainingInitial = totalFilms - chunkSize %}
@@ -155,7 +158,7 @@
                     {% endif %}
                 {% else %}
                     <div class="alert alert-info mt-3" role="alert">
-                        Aucun rôle d'acteur trouvé dans la filmographie.
+                        Aucun film trouvé dans la filmographie.
                     </div>
                 {% endif %}
             </div>
